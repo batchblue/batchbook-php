@@ -1,0 +1,29 @@
+<phpunit bootstrap="./TestHelper.php">
+    <testsuite name="Batch Blue Test Suite">
+        <directory>./</directory>
+    </testsuite>
+
+    <php>
+        <!-- <ini name="include_path" value="../library"/> -->
+    </php>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">../library/Batchblue</directory>
+<!--
+            <directory suffix=".php">../application/</directory>
+            <exclude>
+                <directory suffix=".phtml">../application/</directory>
+            </exclude>
+-->
+        </whitelist>
+    </filter>
+
+
+    <logging>
+        <log type="coverage-html" target="./log/report" charset="UTF-8"
+            yui="true" highlight="true"
+            lowUpperBound="50" highLowerBound="80"/>
+        <log type="testdox-html" target="./log/testdox.html" />
+    </logging>
+</phpunit>
