@@ -1,0 +1,6 @@
+<?php
+
+    $Batchblue_Service_ACCOUNT_NAME = 'gliffytest';
+    $Batchblue_Service_TOKEN = 'bHlkllsGFi';
+
+?>
