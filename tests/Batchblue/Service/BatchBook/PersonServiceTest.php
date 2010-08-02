@@ -40,14 +40,23 @@ class Batchblue_Service_BatchBook_PersonServiceTest extends PHPUnit_Framework_Te
      */
     public function testPostPerson()
     {
-        $person = new Batchblue_Service_BatchBook_Person();
+        $person = new Batchblue_Service_BatchBook_Person(); 
+        $location = new Batchblue_Service_BatchBook_Location();
+        $location ->setEmail( md5(uniqid(rand(), true)) .  'test@test.com')
+                  ->setPhone( '123-123-1234')
+        ;
+
+        $locations = array( $location ); 
+
         $person
            ->setFirstName('TestFirstName')
            ->setLastName('TestLastName')
            ->setTitle('Developer')
            ->setCompany('Test Company')
-           ->setNotes('Test notes go here')
+           ->setNotes('Test notes go here') 
+           ->setLocations($locations) 
         ;
+
         $this->_personService->postPerson($person);
         $this->assertGreaterThan(
             0,
@@ -79,12 +88,22 @@ class Batchblue_Service_BatchBook_PersonServiceTest extends PHPUnit_Framework_Te
      */
     public function testPutPerson(Batchblue_Service_BatchBook_Person $person)
     {
+
+        $location = new Batchblue_Service_BatchBook_Location();
+        $location ->setEmail( md5(uniqid(rand(), true)) .  'test@test.com')
+                  ->setPhone( '123-123-9999')
+        ;
+
+        $locations = array( $location ); 
+
+
         $person
             ->setFirstName('TestFirstName')
             ->setLastName('TestLastName')
             ->setTitle('Developer')
             ->setCompany('Test Company')
-            ->setNotes('Test notes go here')
+            ->setNotes('Test notes go here') 
+            ->setLocations( $locations  )
         ;
         $this->_personService->putPerson($person);
         $getPerson = $this->_personService->getPerson($person->getId());

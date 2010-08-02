@@ -57,9 +57,10 @@ class Batchblue_Service_BatchBook_PersonService
             ->setLastName($xmlElement->last_name)
             ->setTitle($xmlElement->title)
             ->setCompany($xmlElement->company)
-            ->setNotes($xmlElement->notes)
+            ->setNotes($xmlElement->notes) 
         ;
-        return $person;
+            
+         return $person;
     }
 
     /**
@@ -156,27 +157,132 @@ class Batchblue_Service_BatchBook_PersonService
             'person[notes]',
             $person->getNotes()
         );
+
+
+        $personLocations = $person->getLocations();
+
+
         $httpClient->setAuth($this->_token, 'x');
         $response = $httpClient->request(Zend_Http_Client::POST);
         if (201 != $response->getStatus()) {
             //TODO: throw more specific exception
             throw new Exception('Person not created.');
         }
+
+
         $location = $response->getHeader('location');
         $httpClient = new Zend_Http_Client($location);
         $httpClient->setAuth($this->_token, 'x');
         $response = $httpClient->request(Zend_Http_Client::GET);
         $xmlResponse = simplexml_load_string($response->getBody());
         $this->_populatePersonFromXmlElement($xmlResponse, $person);
+
+        $this->postLocationsOnPerson($person,$personLocations ); 
+
         return $this;
+    }
+
+
+    /**
+     * Post Locations on a Person
+     *
+     * @param Batchblue_Service_BatchBook_Person $person
+     * @param array $locations
+     * @return 
+     */
+    
+    public function postLocationsOnPerson(Batchblue_Service_BatchBook_Person $person,array $locations) {
+        //If there is a location set on this person, then add it
+        if( $locations != null ) { 
+
+            $personIdAsStr = strval($person->getId());
+
+            $httpClient = new Zend_Http_Client(
+                'https://' . $this->_accountName . '.batchbook.com/service/people/' . $personIdAsStr . '/locations.xml'
+            ); 
+
+
+            $httpClient->setAuth($this->_token, 'x'); 
+
+            foreach( $locations as $aLocation ) { 
+
+                $httpClient->setParameterPost(
+                    'location[label]',
+                    $aLocation->getLabel()
+                );
+
+                $httpClient->setParameterPost(
+                    'location[email]',
+                    $aLocation->getEmail()
+                );
+
+                $httpClient->setParameterPost(
+                    'location[website]',
+                    $aLocation->getWebsite()
+                );
+
+                $httpClient->setParameterPost(
+                    'location[phone]',
+                    $aLocation->getPhone()
+                );
+
+                $httpClient->setParameterPost(
+                    'location[cell]',
+                    $aLocation->getCell()
+                );
+
+                $httpClient->setParameterPost(
+                    'location[fax]',
+                    $aLocation->getFax()
+                );
+
+                $httpClient->setParameterPost(
+                    'location[street_1]',
+                    $aLocation->getStreet1()
+                );
+
+                $httpClient->setParameterPost(
+                    'location[street_2]',
+                    $aLocation->getStreet2()
+                );
+
+                $httpClient->setParameterPost(
+                    'location[city]',
+                    $aLocation->getCity()
+                );
+
+                $httpClient->setParameterPost(
+                    'location[state]',
+                    $aLocation->getState()
+                );
+
+                $httpClient->setParameterPost(
+                    'location[postal_code]',
+                    $aLocation->getPostalCode()
+                );
+
+
+                $httpClient->setParameterPost(
+                    'location[country]',
+                    $aLocation->getCountry()
+                ); 
+
+                $response = $httpClient->request(Zend_Http_Client::POST); 
+
+
+                if (201 != $response->getStatus()) {
+                    //TODO: throw more specific exception 
+                    throw new Exception('Location on Person not updated.');
+                } 
+            } 
+        } 
     }
 
     /**
      * Put Person
      *
      * @param Batchblue_Service_BatchBook_Person $person
-     * @return Batchblue_Service_BatchBook_PersonService   Provides a fluent interface
-     */
+     * @return Batchblue_Service_BatchBook_PersonService   Provides a fluent interface */
     public function putPerson(Batchblue_Service_BatchBook_Person $person)
     {
         $httpClient = new Zend_Http_Client(
@@ -188,6 +294,7 @@ class Batchblue_Service_BatchBook_PersonService
             'person[title]'         => $person->getTitle(),
             'person[company]'       => $person->getCompany(),
             'person[notes]'         => $person->getNotes(),
+            'person[email]'         => $person->getEmail(),
         );
         $httpClient->setAuth($this->_token, 'x');
         $httpClient->setHeaders(
