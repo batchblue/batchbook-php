@@ -120,7 +120,7 @@ class Batchblue_Service_BatchBook_PersonService
             default;
                 //TODO: throw more specific exception
                 throw new Exception('Could not get Person.');
-        }
+        } 
         $xmlResponse = simplexml_load_string($response->getBody());
         return $this->_populatePersonFromXmlElement($xmlResponse);
     }
