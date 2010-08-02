@@ -39,6 +39,7 @@ class Batchblue_Service_BatchBook_Person
      */
     private $_title;
 
+
     /**
      * string $_company company for person
      */
@@ -48,6 +49,13 @@ class Batchblue_Service_BatchBook_Person
      * string $_notes notes for person
      */
     private $_notes;
+
+
+    /**
+     * array $_ locations for a person
+     */
+    private $_locations;
+
 
     /**
      * constructor
@@ -88,6 +96,40 @@ class Batchblue_Service_BatchBook_Person
 
         return $this;
     }
+
+
+
+    /**
+     * Get Locations
+     *
+     * Get locations for a person
+     *
+     * @param null
+     * @return array $locations of person
+     */
+    public function getLocations()
+    {
+        return $this->_locations;
+    }
+
+    /**
+     * Set Locations
+     *
+     * Set locations for person
+     *
+     * @param array $value locations of person 
+     */
+    public function setLocations($value)
+    {
+        $this->_locations = (array) $value;
+
+        return $this;
+    }
+
+
+
+
+
 
     /**
      * Get First Name
