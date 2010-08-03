@@ -57,6 +57,7 @@ class Batchblue_Service_BatchBook_Person
     private $_locations;
 
 
+
     /**
      * constructor
      *
@@ -68,6 +69,7 @@ class Batchblue_Service_BatchBook_Person
             $this->setId($id);
         }
     }
+
 
     /**
      * Get Id

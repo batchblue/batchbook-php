@@ -16,6 +16,7 @@ class Batchblue_Service_BatchBook_DealServiceTest extends PHPUnit_Framework_Test
      * @var Batchblue_Service_BatchBook_DealService
      */
     private $_dealService;
+    private $_personService;
 
     public function setUp()
     { 
@@ -25,6 +26,13 @@ class Batchblue_Service_BatchBook_DealServiceTest extends PHPUnit_Framework_Test
             $Batchblue_Service_ACCOUNT_NAME , 
             $Batchblue_Service_TOKEN 
         );
+
+        $this->_personService = new Batchblue_Service_BatchBook_PersonService(
+            $Batchblue_Service_ACCOUNT_NAME , 
+            $Batchblue_Service_TOKEN 
+        );
+
+
     }
 
     public function testIndexOfDealsWithNoParams()
@@ -91,6 +99,43 @@ class Batchblue_Service_BatchBook_DealServiceTest extends PHPUnit_Framework_Test
         );
         return $deal;
     }
+
+
+    /**
+     * @depends testAddPersonToDeal
+     * @param Batchblue_Service_BatchBook_Deal $deal
+     * @return Batchblue_Service_BatchBook_Deal
+     */
+    public function testAddPersonToDeal(Batchblue_Service_BatchBook_Deal $deal,Batchblue_Service_BatchBook_Person $person)
+    {
+
+        $person
+           ->setFirstName('TestFirstNameWithDeal')
+           ->setLastName('TestLastNameWithDeal') 
+           ->setNotes('Downloaded my product') 
+        ;
+
+        $deal
+            ->setTitle('Test Deal Title With Person')
+            ->setDescription('Test Deal Description With Person')
+            ->setStatus('pending') 
+        ;
+
+        $this->_dealService->putDeal($deal); 
+        $this->_personService->putPerson($person); 
+
+        $this->_dealService->putPersonOnDeal($deal,$person);
+
+        $getDeal = $this->_dealService->getDeal($deal->getId());
+
+        $this->assertEquals(
+            $deal,
+            $getDeal
+        );
+        return $deal;
+    }
+
+
 
     /**
      * @depends testPutDeal
