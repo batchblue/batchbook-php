@@ -22,6 +22,16 @@
 
 class Batchblue_Service_BatchBook_Location {
 
+
+
+    /**
+     * integer $_id of location
+     */ 
+    private $_id;
+
+
+
+
     /**
      * string $_label of location
      */ 
@@ -98,6 +108,21 @@ class Batchblue_Service_BatchBook_Location {
             $this->setLabel('work');
         } 
     }
+
+
+    public function getId()
+    {
+        return $this->_id;
+    }
+
+    public function setId($value)
+    {
+        $this->_id = (integer) $value;
+
+        return $this;
+    }
+
+
 
     public function getLabel()
     {

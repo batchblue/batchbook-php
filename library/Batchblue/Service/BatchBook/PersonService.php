@@ -59,7 +59,37 @@ class Batchblue_Service_BatchBook_PersonService
             ->setCompany($xmlElement->company)
             ->setNotes($xmlElement->notes) 
         ;
+
+
+        $locations =  array(); 
+  
+     
+ 
+        foreach( $xmlElement->locations->location as $xmlLocation ) {
             
+
+            $location = new Batchblue_Service_BatchBook_Location();
+            $location
+                     ->setId( $xmlLocation->id )
+                     ->setLabel( $xmlLocation->label )
+                     ->setEmail( $xmlLocation->email )
+                     ->setWebsite( $xmlLocation->website )
+                     ->setPhone( $xmlLocation->phone )
+                     ->setCell( $xmlLocation->cell )
+                     ->setFax( $xmlLocation->fax )
+                     ->setStreet1( $xmlLocation->street_1 )
+                     ->setStreet2( $xmlLocation->street_2 )
+                     ->setCity( $xmlLocation->city )
+                     ->setState( $xmlLocation->state )
+                     ->setPostalCode( $xmlLocation->postal_code )
+                     ->setCountry( $xmlLocation->country )
+            ; 
+
+            array_push( $locations,$location); 
+        } 
+        
+        $person->setLocations( $locations );                 
+
          return $person;
     }
 
@@ -293,8 +323,7 @@ class Batchblue_Service_BatchBook_PersonService
             'person[last_name]'     => $person->getLastName(),
             'person[title]'         => $person->getTitle(),
             'person[company]'       => $person->getCompany(),
-            'person[notes]'         => $person->getNotes(),
-            'person[email]'         => $person->getEmail(),
+            'person[notes]'         => $person->getNotes(), 
         );
         $httpClient->setAuth($this->_token, 'x');
         $httpClient->setHeaders(
@@ -310,6 +339,11 @@ class Batchblue_Service_BatchBook_PersonService
             //TODO: throw more specific exception
             throw new Exception('Person not updated.');
         }
+
+
+        //update the locations
+        $this->postLocationsOnPerson($person,$person->getLocations() ); 
+
         return $this;
     }
 
