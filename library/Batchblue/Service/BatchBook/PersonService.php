@@ -104,6 +104,8 @@ class Batchblue_Service_BatchBook_PersonService
      */
     public function indexOfPersons($name = null, $email= null, $offset = null, $limit = null)
     {
+
+
         $httpClient = new Zend_Http_Client(
             'https://' . $this->_accountName . '.batchbook.com/service/people.xml'
         );
@@ -111,16 +113,16 @@ class Batchblue_Service_BatchBook_PersonService
             $httpClient->setParameterGet('name', $name);
         }
         if (null !== $email) {
-            $httpClient->setParameterGet('email', $name);
+            $httpClient->setParameterGet('email', $email );
         }
         if (null !== $offset) {
-            $httpClient->setParameterGet('offset', $name);
+            $httpClient->setParameterGet('offset', $offset);
         }
         if (null !== $limit) {
-            $httpClient->setParameterGet('limit', $name);
+            $httpClient->setParameterGet('limit', $limit);
         }
-        $httpClient->setAuth($this->_token, 'x');
-        $response = $httpClient->request(Zend_Http_Client::GET);
+        $httpClient->setAuth($this->_token, 'x'); 
+        $response = $httpClient->request(Zend_Http_Client::GET); 
         $xmlResponse = simplexml_load_string($response->getBody());
         $persons = array();
         foreach ($xmlResponse->person as $personElement) {
