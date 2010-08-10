@@ -62,8 +62,17 @@ class Batchblue_Service_BatchBook_PersonService
 
 
         $locations =  array(); 
-  
-     
+        $tags =  array(); 
+
+        
+
+        foreach( $xmlElement->tags->tag as $xmlTag ) { 
+            $tag = new Batchblue_Service_BatchBook_Tag();
+            $tag->setName( $xmlTag['name'] )
+                  ; 
+
+            array_push( $tags,$tag); 
+        } 
  
         foreach( $xmlElement->locations->location as $xmlLocation ) {
             
@@ -89,6 +98,7 @@ class Batchblue_Service_BatchBook_PersonService
         } 
         
         $person->setLocations( $locations );                 
+        $person->setTags( $tags );                 
 
          return $person;
     }
@@ -209,7 +219,9 @@ class Batchblue_Service_BatchBook_PersonService
         $xmlResponse = simplexml_load_string($response->getBody());
         $this->_populatePersonFromXmlElement($xmlResponse, $person);
 
-        $this->postLocationsOnPerson($person,$personLocations ); 
+        if( $personLocations != null ) {
+            $this->postLocationsOnPerson($person,$personLocations ); 
+        }
 
         return $this;
     }
@@ -368,4 +380,95 @@ class Batchblue_Service_BatchBook_PersonService
         }
         return $this;
     }
+
+
+
+    /**
+     * Add Super Tag
+     * 
+     * NOTE: Super Tags cannot be created via the API, so they need to be created via the HTML interface before you apply them 
+     *
+     * @param Batchblue_Service_BatchBook_Person $person
+     * @param string $tag
+     */ 
+    public function addSuperTag(Batchblue_Service_BatchBook_Person $person,Batchblue_Service_BatchBook_SuperTag $tag) {
+
+        $realTagName = str_replace( ' ', '_',strtolower($tag->getName() ) );
+        $reqUrl = 'https://' . $this->_accountName . '.batchbook.com/service/people/' . $person->getId() . '/super_tags/' . $realTagName . '.xml';
+        error_log( 'requrl:' . $reqUrl );
+
+
+        $httpClient = new Zend_Http_Client(
+            $reqUrl 
+        );
+
+
+        $paramsPut = array();
+
+        $fields = $tag->getFields();
+
+        foreach( $fields as $key => $value ) { 
+           
+            //keys must be lower case and have spaces replaced with underscore 
+            $realKey = str_replace( ' ', '_',strtolower($key) ); 
+            $realValue = urlencode( $value ); 
+
+            error_log('realKey:' . $realKey );
+            error_log('realValue:' . $realValue );
+
+            $paramsPut['super_tag[' . strtolower($realKey) . ']' ] = $value; 
+        };
+
+        $httpClient->setAuth($this->_token, 'x');
+        $httpClient->setHeaders(
+            Zend_Http_Client::CONTENT_TYPE,
+            Zend_Http_Client::ENC_URLENCODED
+        );
+        $httpClient->setRawData(
+            http_build_query($paramsPut, '', '&'),
+            Zend_Http_Client::ENC_URLENCODED
+        );
+        $response = $httpClient->request(Zend_Http_Client::PUT);
+        if (200 != $response->getStatus()) {
+            //TODO: throw more specific exception
+            throw new Exception('SuperTag \'' . $tag->getName() . '\' not added to Person with id=' . $person->getId() . "\n" . $response->getMessage() . "\n" .
+            $response->getBody() . "\n" . $httpClient->getLastRequest() );
+        } 
+
+    } 
+
+
+    /**
+     * Add Tag
+     *
+     * @param Batchblue_Service_BatchBook_Person $person
+     * @param string $tag
+     */ 
+    public function addTag(Batchblue_Service_BatchBook_Person $person,Batchblue_Service_BatchBook_Tag $tag)
+    {
+        $httpClient = new Zend_Http_Client(
+            'https://' . $this->_accountName . '.batchbook.com/service/people/' . $person->getId() . '/add_tag.xml'
+        );
+        $paramsPut = array(
+            'tag'    => $tag->getName(), 
+        );
+
+        $httpClient->setAuth($this->_token, 'x');
+        $httpClient->setHeaders(
+            Zend_Http_Client::CONTENT_TYPE,
+            Zend_Http_Client::ENC_URLENCODED
+        );
+        $httpClient->setRawData(
+            http_build_query($paramsPut, '', '&'),
+            Zend_Http_Client::ENC_URLENCODED
+        );
+        $response = $httpClient->request(Zend_Http_Client::PUT);
+        if (200 != $response->getStatus()) {
+            //TODO: throw more specific exception
+            throw new Exception('Tag not added to person with id=' . $person->getId() );
+        } 
+    }
+
+
+
 }

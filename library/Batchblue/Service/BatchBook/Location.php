@@ -9,7 +9,7 @@
  */
 
 /**
- * Person
+ * Location
  *
  * @category    Batchblue
  * @package     Batchblue_Service

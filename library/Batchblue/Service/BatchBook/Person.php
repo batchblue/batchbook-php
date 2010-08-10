@@ -59,6 +59,16 @@ class Batchblue_Service_BatchBook_Person
 
 
     /**
+     * array $_ locations for a person
+     */
+    private $_tags;
+
+
+
+
+
+
+    /**
      * constructor
      *
      * @param int $id optional id of person
@@ -129,6 +139,35 @@ class Batchblue_Service_BatchBook_Person
     }
 
 
+
+
+
+    /**
+     * Get Tags
+     *
+     * Get tags for a person
+     *
+     * @param null
+     * @return array $tags of person
+     */
+    public function getTags()
+    {
+        return $this->_tags;
+    }
+
+    /**
+     * Set Tags
+     *
+     * Set tags for person
+     *
+     * @param array $value tags of person 
+     */
+    public function setTags($value)
+    {
+        $this->_tags = (array) $value;
+
+        return $this;
+    }
 
 
 

@@ -198,7 +198,8 @@ class Batchblue_Service_BatchBook_DealService
         $response = $httpClient->request(Zend_Http_Client::PUT);
         if (200 != $response->getStatus()) {
             //TODO: throw more specific exception
-            throw new Exception('Deal not updated.');
+            echo $httpClient->getLastRequest();
+            throw new Exception('Deal not updated:' . $response->getMessage() . "\n" . $response->getBody() );
         }
         return $this;
     }
@@ -221,6 +222,41 @@ class Batchblue_Service_BatchBook_DealService
             throw new Exception('Deal not deleted.');
         }
         return $this;
+    }
+
+
+    /**
+        Note: REST API supports adding company to the deal too
+    */
+    public function addPersonToDeal(Batchblue_Service_BatchBook_Deal $deal, Batchblue_Service_BatchBook_Person $person)
+    {
+    
+        
+
+        $httpClient = new Zend_Http_Client(
+            'https://' . $this->_accountName . '.batchbook.com/service/deals/' . $deal->getId() . '/add_related_contact.xml'
+        );
+
+
+        $paramsPut = array(
+            'contact_id'    => $person->getId(), 
+        );
+
+        $httpClient->setAuth($this->_token, 'x');
+        $httpClient->setHeaders(
+            Zend_Http_Client::CONTENT_TYPE,
+            Zend_Http_Client::ENC_URLENCODED
+        );
+        $httpClient->setRawData(
+            http_build_query($paramsPut, '', '&'),
+            Zend_Http_Client::ENC_URLENCODED
+        );
+        $response = $httpClient->request(Zend_Http_Client::PUT);
+        if (200 != $response->getStatus()) {
+            //TODO: throw more specific exception
+            throw new Exception('Person not added to deal');
+        }
+        return $this; 
     }
 
 

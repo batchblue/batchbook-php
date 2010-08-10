@@ -12,3 +12,8 @@ or just the models:
 
 By default, coverage reports and TestDox are generated in the logs/ 
 subdirectory.
+
+If you are using OS X with Mac Ports, you might have more luck running the tests with this command:
+
+    phpunit --verbose --configuration phpunit.xml --include-path=".:/opt/local/www/ZendFramework/library:/opt/local/www/ZendFramework/extra/library"
+
