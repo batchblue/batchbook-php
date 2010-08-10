@@ -65,6 +65,7 @@ class Batchblue_Service_BatchBook_PersonServiceTest extends PHPUnit_Framework_Te
         return $person;
     }
 
+
     /**
      * @depends testPostPerson
      * @param Batchblue_Service_BatchBook_Person $person
@@ -121,6 +122,86 @@ class Batchblue_Service_BatchBook_PersonServiceTest extends PHPUnit_Framework_Te
         return $person;
     }
 
+
+
+    /** 
+     * @depends testPutPerson
+     * @param Batchblue_Service_BatchBook_Person $person
+     * @return void
+     */
+    public function testAddTag(Batchblue_Service_BatchBook_Person $person)
+    { 
+
+        $tagA = new Batchblue_Service_BatchBook_Tag();
+        $tagA->setName( 'my_test_tag_a' . md5(uniqid(rand(), true)) );
+
+        $tagB = new Batchblue_Service_BatchBook_Tag();
+        $tagB->setName(  'my_test_tag_b' . md5(uniqid(rand(), true)) );
+
+        $this->_personService->addTag($person,$tagA);
+        $this->_personService->addTag($person,$tagB);
+
+        $getPerson = $this->_personService->getPerson($person->getId()); 
+
+        $tags = $getPerson->getTags();
+
+        $this->assertGreaterThanOrEqual(2, count($tags) ); 
+
+        $foundTagA = false;
+        $foundTagB = false;
+
+        foreach( $tags as $currentTag ) {
+            if( $currentTag->getName() == $tagA->getName() ) {
+                $foundTagA = true;
+            }
+
+            if( $currentTag->getName() == $tagB->getName() ) {
+                $foundTagB = true;
+            } 
+        }
+        
+
+        $this->assertTrue( $foundTagA, "Looking for tagA: " . $tagA->getName() );
+        $this->assertTrue( $foundTagB, "Looking for tagB: " . $tagB->getName() );
+     
+     
+    }
+
+
+
+    /** 
+     * @depends testPutPerson
+     * @param Batchblue_Service_BatchBook_Person $person
+     * @return void
+     */
+
+    public function testAddSuperTag(Batchblue_Service_BatchBook_Person $person)
+    { 
+        /**
+            NOTE:  This test will only work if you have created a SuperTag via the HTML interface as follows: 
+
+            Name:  MY_TEST_SUPER_TAG_A
+            Fields:  key (text)
+                     key With Space (number)
+        */
+
+        /**
+        $tagA = new Batchblue_Service_BatchBook_SuperTag();
+
+        $fields = array ( "key" => "my23customvalue", 
+                          "key With Space" => "99" ); 
+
+        $tagA->setName( 'my_test_super_tag_a');
+        $tagA->setFields( $fields );
+
+        $this->_personService->addSuperTag($person,$tagA); 
+        **/
+   
+        $this->markTestIncomplete("Test is incomplete. We can't really test this until the REST API supports creating tags."); 
+     
+    } 
+
+
     /**
      * @depends testPutPerson
      * @param Batchblue_Service_BatchBook_Person $person
@@ -128,11 +209,16 @@ class Batchblue_Service_BatchBook_PersonServiceTest extends PHPUnit_Framework_Te
      */
     public function testDeletePerson(Batchblue_Service_BatchBook_Person $person)
     { 
-        $this->_personService->deletePerson($person);
+//        $this->_personService->deletePerson($person);
         $getPerson = $this->_personService->getPerson($person->getId()); 
 
-
-        //TODO:  Commented out because the API is returning deleted Person objects
+        //TODO:  Test is incomplete because the API is returning deleted Person objects
+        $this->markTestIncomplete("Test is incomplete as the REST API currently returns deleted Person objects"); 
         //$this->assertNull($getPerson);
     }
+
+
+
+
+
 }

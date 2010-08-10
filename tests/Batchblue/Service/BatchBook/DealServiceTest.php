@@ -101,13 +101,15 @@ class Batchblue_Service_BatchBook_DealServiceTest extends PHPUnit_Framework_Test
     }
 
 
-    /**
-     * @depends testAddPersonToDeal
+    /** 
      * @param Batchblue_Service_BatchBook_Deal $deal
      * @return Batchblue_Service_BatchBook_Deal
      */
-    public function testAddPersonToDeal(Batchblue_Service_BatchBook_Deal $deal,Batchblue_Service_BatchBook_Person $person)
+    public function testAddPersonToDeal()
     {
+
+
+        $person = new Batchblue_Service_BatchBook_Person();
 
         $person
            ->setFirstName('TestFirstNameWithDeal')
@@ -115,16 +117,18 @@ class Batchblue_Service_BatchBook_DealServiceTest extends PHPUnit_Framework_Test
            ->setNotes('Downloaded my product') 
         ;
 
+        $deal = new Batchblue_Service_BatchBook_Deal();
+
         $deal
             ->setTitle('Test Deal Title With Person')
             ->setDescription('Test Deal Description With Person')
             ->setStatus('pending') 
         ;
 
-        $this->_dealService->putDeal($deal); 
-        $this->_personService->putPerson($person); 
+        $this->_dealService->postDeal($deal); 
+        $this->_personService->postPerson($person); 
 
-        $this->_dealService->putPersonOnDeal($deal,$person);
+        $this->_dealService->addPersonToDeal($deal,$person);
 
         $getDeal = $this->_dealService->getDeal($deal->getId());
 
@@ -148,7 +152,8 @@ class Batchblue_Service_BatchBook_DealServiceTest extends PHPUnit_Framework_Test
         $getDeal = $this->_dealService->getDeal($deal->getId()); 
 
 
-        //TODO:  Commented out because the API is returning deleted Deal objects
+        //TODO:  Test is incomplete because the API is returning deleted Deal objects 
+        $this->markTestIncomplete("Test is incomplete as the REST API currently returns deleted Deal objects"); 
         //$this->assertNull($getDeal);
     }
 }
