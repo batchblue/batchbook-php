@@ -55,14 +55,34 @@ class Batchblue_Service_BatchBook_ToDoService
         if (null === $todo) {
             $todo = new Batchblue_Service_BatchBook_ToDo();
         }
+
+        
+
+        if( $xmlElement->complete == 'true' ) {
+            $completeBool = true;
+        } else { 
+            $completeBool = false;
+        }
+
+
+        if( $xmlElement->flagged == 'true' ) {
+            $flaggedBool = true;
+        } else { 
+            $flaggedBool = false;
+        }
+
+
         $todo 
             ->setId($xmlElement->id)
             ->setTitle($xmlElement->title)
             ->setDescription($xmlElement->description)
-            ->setDueDate($xmlElement->due_date)
-            ->setFlagged($xmlElement->flagged)
-            ->setComplete($xmlElement->complete)
+            ->setDueDate( new DateTime( $xmlElement->due_date ) )
+            ->setFlagged( $flaggedBool )
+            ->setComplete($completeBool)
             ;
+
+        
+
         return $todo;
     }
 
@@ -96,6 +116,9 @@ class Batchblue_Service_BatchBook_ToDoService
     }
 
 
+    private function formatDateForBatchbook(DateTime $dt) {
+        return date_format( $dt, 'Y-m-d H:i:s O');
+    }
 
 
     /**
@@ -123,15 +146,34 @@ class Batchblue_Service_BatchBook_ToDoService
 
         $httpClient->setParameterPost(
             'todo[due_date]',
-            $todo->getDueDate()
+            $this->formatDateForBatchbook( $todo->getDueDate() )
         );
+
+        //this effectively defaults flagged to false
+        if( $todo->getFlagged() == null || $todo->getFlagged() == false ) {
+            $flaggedParam = "false";
+        } else { 
+            $flaggedParam = "true";
+        }
+
+
+
         $httpClient->setParameterPost(
             'todo[flagged]',
-            $todo->getFlagged()
+            $flaggedParam
         );
+
+        //this effectively defaults complete to false
+        if( $todo->getComplete() == null || $todo->getComplete() == false ) {
+            $completeParam = "false";
+        } else { 
+            $completeParam = "true";
+        }
+
+
         $httpClient->setParameterPost(
             'todo[complete]',
-            $todo->getComplete()
+            $completeParam 
         );
 
 
@@ -141,7 +183,7 @@ class Batchblue_Service_BatchBook_ToDoService
         $response = $httpClient->request(Zend_Http_Client::POST);
         if (201 != $response->getStatus()) {
             //TODO: throw more specific exception
-            throw new Exception('ToDo not created.');
+            throw new Exception('ToDo not created.'  . $response->getMessage() . $response->getBody() );
         }
 
 
@@ -167,12 +209,27 @@ class Batchblue_Service_BatchBook_ToDoService
         $httpClient = new Zend_Http_Client(
             'https://' . $this->_accountName . '.batchbook.com/service/todos/' . $todo->getId() . '.xml'
         );
+
+
+
+        if( $todo->getFlagged() == null || $todo->getFlagged() == false ) {
+            $flaggedParam = "false";
+        } else { 
+            $flaggedParam = "true";
+        } 
+
+        if( $todo->getComplete() == null || $todo->getComplete() == false ) {
+            $completeParam = "false";
+        } else { 
+            $completeParam = "true";
+        } 
+
         $paramsPut = array(
             'todo[title]'    => $todo->getTitle(),
             'todo[description]'     => $todo->getDescription(),
-            'todo[due_date]'         => $todo->getDueDate(),
-            'todo[flagged]'       => $todo->getFlagged(), 
-            'todo[complete]'       => $todo->getComplete(), 
+            'todo[due_date]'         => $this->formatDateForBatchbook( $todo->getDueDate() ),
+            'todo[flagged]'       => $flaggedParam, 
+            'todo[complete]'       => $completeParam, 
         );
         $httpClient->setAuth($this->_token, 'x');
         $httpClient->setHeaders(

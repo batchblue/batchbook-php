@@ -160,7 +160,7 @@ class Batchblue_Service_BatchBook_ToDo {
      * 
      *
      * @param null
-     * @return string $due_date of todo
+     * @return DateTime $due_date of todo
      */
     public function getDueDate()
     {
@@ -171,12 +171,12 @@ class Batchblue_Service_BatchBook_ToDo {
      * Set DueDate 
      * 
      *
-     * @param string $value due_date of todo
+     * @param DateTime $value due_date of todo
      * @return Batchblue_Service_BatchBook_ToDo
      */
-    public function setDueDate($value)
+    public function setDueDate(DateTime $value)
     {
-        $this->_due_date = (string) $value;
+        $this->_due_date =  $value;
 
         return $this;
     } 
