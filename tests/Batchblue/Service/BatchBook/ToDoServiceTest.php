@@ -41,13 +41,20 @@ class Batchblue_Service_BatchBook_ToDoServiceTest extends PHPUnit_Framework_Test
         $toDo
             ->setTitle('Test ToDo Title')
             ->setDescription('Test ToDo Description') 
-           
-        ;
-        $this->_toDoService->postToDo($toDo);
+            ->setFlagged(false) 
+            ->setDueDate(  new DateTime('2012-12-13')  ) 
+        ; 
+
+        $this->_toDoService->postToDo($toDo); 
+
         $this->assertGreaterThan(
             0,
             $toDo->getId()
         );
+
+        //testing this because PHP casts any string, even 'false' to true when you do so on a boolean variable.  ick!
+        $this->assertFalse(  $toDo->getFlagged() );
+
         return $toDo;
     }
 
@@ -77,9 +84,11 @@ class Batchblue_Service_BatchBook_ToDoServiceTest extends PHPUnit_Framework_Test
         $toDo
             ->setTitle('Test ToDo Title updated')
             ->setDescription('Test ToDo Description updated') 
-        ;
+        ; 
+
         $this->_toDoService->putToDo($toDo);
-        $getToDo = $this->_toDoService->getToDo($toDo->getId());
+        $getToDo = $this->_toDoService->getToDo($toDo->getId()); 
+
         $this->assertEquals(
             $toDo,
             $getToDo
@@ -97,14 +106,8 @@ class Batchblue_Service_BatchBook_ToDoServiceTest extends PHPUnit_Framework_Test
      */
     public function testDeleteToDo(Batchblue_Service_BatchBook_ToDo $toDo)
     { 
- //       $this->_toDoService->deleteToDo($toDo);
-  //      $getToDo = $this->_toDoService->getToDo($toDo->getId()); 
-  //      $this->assertNull($getToDo);
-
-        //TODO:  Intentially not deleting TODO items for purposes of testing missing TODO items that are created via the API
-        $this->markTestIncomplete("Not deleting ToDo's until we figure out why created ToDo's don't show up on dashboard and calendar.... "); 
- 
-
-
+        $this->_toDoService->deleteToDo($toDo);
+        $getToDo = $this->_toDoService->getToDo($toDo->getId()); 
+        $this->assertNull($getToDo); 
     }
 }

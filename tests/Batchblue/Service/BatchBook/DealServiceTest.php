@@ -150,10 +150,6 @@ class Batchblue_Service_BatchBook_DealServiceTest extends PHPUnit_Framework_Test
     { 
         $this->_dealService->deleteDeal($deal);
         $getDeal = $this->_dealService->getDeal($deal->getId()); 
-
-
-        //TODO:  Test is incomplete because the API is returning deleted Deal objects 
-        $this->markTestIncomplete("Test is incomplete as the REST API currently returns deleted Deal objects"); 
-        //$this->assertNull($getDeal);
+        $this->assertNull($getDeal);
     }
 }

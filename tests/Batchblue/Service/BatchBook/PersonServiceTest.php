@@ -197,7 +197,7 @@ class Batchblue_Service_BatchBook_PersonServiceTest extends PHPUnit_Framework_Te
         $this->_personService->addSuperTag($person,$tagA); 
         **/
    
-        $this->markTestIncomplete("Test is incomplete. We can't really test this until the REST API supports creating tags."); 
+        $this->markTestIncomplete("Test is incomplete. We can't really test this until the REST API supports creating SuperTags."); 
      
     } 
 
@@ -214,6 +214,7 @@ class Batchblue_Service_BatchBook_PersonServiceTest extends PHPUnit_Framework_Te
 
         //TODO:  Test is incomplete because the API is returning deleted Person objects
         $this->markTestIncomplete("Test is incomplete as the REST API currently returns deleted Person objects"); 
+        // When REST API is fixed, remove comment below and delete the markTestIncomplete() line above
         //$this->assertNull($getPerson);
     }
 
