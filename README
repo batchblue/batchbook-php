@@ -1,0 +1,99 @@
+This library is intended to be used with the Zend Framework. It has been
+developed as a component of the Zend Framework.
+
+It can be easily integrated into any non-Zend Framework PHP application.
+
+This library has one dependency:  Zend_Http_Client
+
+===============
+USAGE EXAMPLE
+===============
+
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+require_once 'Zend/Http/Client.php';
+require_once 'BatchBook/Person.php';
+require_once 'BatchBook/PersonService.php';
+
+require_once 'BatchBook/Communication.php';
+require_once 'BatchBook/CommunicationService.php';
+
+/****************************************/
+/**** replace with your account name ****/
+/****************************************/
+$account = 'youraccount';
+/*****************************************/
+/**** replace with your account token ****/
+/*****************************************/
+$token = 'yourtoken';
+
+// LIST PEOPLE
+// instantiate personService object for working with contact records
+$personService = new BatchBlue_Service_Batchbook_PersonService($account, $token);
+
+// get list of people (for specific person add name or email parameter)
+$people = $personService->indexOfPersons($name = null, $email = null, $offset =
+0, $limit = 100);
+
+// loop over results and display
+foreach ($people as $person) {
+    echo $person->getFirstName() . ' ' . $person->getLastName() . ': ' . $person->getId() . '<br />';
+}
+
+// LIST COMMUNICATIONS
+$communicationService = new BatchBlue_Service_Batchbook_CommunicationService($account, $token);
+
+// get list of communications (for specific person or type communications,
+// provide (batchbook) contact_id or ctype parameter)
+$communications = $communicationService->indexOfCommunications($contact_id = null, $ctype = null, $offset = 0, $limit = 100);
+
+// loop over results and display
+foreach ($communications as $communication) {
+    echo $communication->getSubject() . ' ' . $communication->getBody() . ': ' . $communication->getId() . '<br />';
+}
+
+// SAVE A COMMUNICATION
+
+// instantiate communication object
+$communication = new BatchBlue_Service_BatchBook_Communication();
+// instantiate communicationService object
+$communicationService = new BatchBlue_Service_BatchBook_CommunicationService($account, $token);
+
+// set required parameters
+$communication->setSubject('This is the subject');
+$communication->setBody('This is the body');
+$communication->setDate('2010-07-28');
+$communication->setCtype('email');
+
+// save the communication record
+try {
+    $communicationService->postCommunication($communication);
+} catch (Exception $e) {
+    die($e->getMessage());
+}
+
+// add a to participant to the record (in this case, Batchbook id is "3")
+try {
+    $communicationService->addParticipant($communication, 3, 'to');
+} catch (Exception $e) {
+    die($e->getMessage());
+}
+
+// add a from participant to the record (in this case, Batchbook id is "200")
+try {
+    $res = $communicationService->addParticipant($communication, 200, 'from');
+} catch (Exception $e) {
+    die($e->getMessage());
+}
+
+// add a tag to communication
+try {
+    $res = $communicationService->addTag($communication, 'some-tag');
+} catch (Exception $e) {
+    die($e->getMessage());
+}
+
+// echo new communication's Batchbook id
+die("-> ".$communication->getId());
