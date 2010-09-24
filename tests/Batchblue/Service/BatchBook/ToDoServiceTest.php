@@ -17,6 +17,7 @@ class Batchblue_Service_BatchBook_ToDoServiceTest extends PHPUnit_Framework_Test
      * @var Batchblue_Service_BatchBook_ToDoService
      */
     private $_toDoService; 
+    private $_personService;
 
     public function setUp()
     { 
@@ -26,6 +27,12 @@ class Batchblue_Service_BatchBook_ToDoServiceTest extends PHPUnit_Framework_Test
             $Batchblue_Service_ACCOUNT_NAME , 
             $Batchblue_Service_TOKEN 
         );
+
+        $this->_personService = new Batchblue_Service_BatchBook_PersonService(
+            $Batchblue_Service_ACCOUNT_NAME , 
+            $Batchblue_Service_TOKEN 
+        );
+
 
 
 
@@ -94,6 +101,47 @@ class Batchblue_Service_BatchBook_ToDoServiceTest extends PHPUnit_Framework_Test
             $getToDo
         );
         return $toDo;
+    }
+
+
+
+
+    /** 
+     * @param Batchblue_Service_BatchBook_Deal $deal
+     * @return Batchblue_Service_BatchBook_Deal
+     */
+    public function testAddPersonToToDo()
+    {
+
+
+        $person = new Batchblue_Service_BatchBook_Person();
+
+        $person
+           ->setFirstName('TestFirstNameWithToDo')
+           ->setLastName('TestLastNameWithToDo') 
+           ->setNotes('Downloaded my product and linking todo') 
+        ;
+
+        $todo = new Batchblue_Service_BatchBook_ToDo();
+
+        $todo
+           ->setTitle('Test ToDo Title with person')
+            ->setDescription('Test ToDo Description with contact attached') 
+            ->setFlagged(false) 
+            ->setDueDate(  new DateTime('2013-12-13')  ) ;
+       
+        $this->_toDoService->postToDo($todo); 
+        $this->_personService->postPerson($person); 
+
+        $this->_toDoService->addPersonToToDo($todo,$person);
+
+        $getTodo = $this->_toDoService->getToDo($todo->getId());
+
+        $this->assertEquals(
+            $todo,
+            $getTodo
+        );
+        return $todo;
     }
 
 

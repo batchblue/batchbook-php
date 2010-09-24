@@ -269,6 +269,36 @@ class Batchblue_Service_BatchBook_ToDoService
         return $this;
     }
 
+    public function addPersonToToDo(Batchblue_Service_BatchBook_ToDo $todo, Batchblue_Service_BatchBook_Person $person)
+    {
+    
+        
+
+        $httpClient = new Zend_Http_Client(
+            'https://' . $this->_accountName . '.batchbook.com/service/todos/' . $todo->getId() . '/add_related_contact.xml'
+        );
+
+
+        $paramsPut = array(
+            'contact_id'    => $person->getId(), 
+        );
+
+        $httpClient->setAuth($this->_token, 'x');
+        $httpClient->setHeaders(
+            Zend_Http_Client::CONTENT_TYPE,
+            Zend_Http_Client::ENC_URLENCODED
+        );
+        $httpClient->setRawData(
+            http_build_query($paramsPut, '', '&'),
+            Zend_Http_Client::ENC_URLENCODED
+        );
+        $response = $httpClient->request(Zend_Http_Client::PUT);
+        if (200 != $response->getStatus()) {
+            //TODO: throw more specific exception
+            throw new Exception('Person not added to todo');
+        }
+        return $this; 
+    }
 
 
 
