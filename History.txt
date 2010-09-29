@@ -1,0 +1,2 @@
+== 2010-09-29
+  Added ability to link People to a ToDo (KohlhardtC)
