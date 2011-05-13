@@ -1,2 +1,4 @@
 == 2010-09-29
   Added ability to link People to a ToDo (KohlhardtC)
+== 2011-05-13
+  Fixed a bug where tag names weren't being applied (dominikgehl)
