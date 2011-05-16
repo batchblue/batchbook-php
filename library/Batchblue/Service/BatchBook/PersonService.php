@@ -67,9 +67,14 @@ class Batchblue_Service_BatchBook_PersonService
         
 
         foreach( $xmlElement->tags->tag as $xmlTag ) { 
-            $tag = new Batchblue_Service_BatchBook_Tag();
-            $tag->setName( $xmlTag->name )
-                  ; 
+            if ($xmlTag->supertag) {
+                $tag = new Batchblue_Service_BatchBook_SuperTag();
+                $tag->setName( $xmlTag->name ); 
+                $tag->setFields($xmlTag->fields);
+            } else {
+                $tag = new Batchblue_Service_BatchBook_Tag();
+                $tag->setName( $xmlTag->name ); 
+            }
 
             array_push( $tags,$tag); 
         } 
