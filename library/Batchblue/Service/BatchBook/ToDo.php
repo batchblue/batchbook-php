@@ -23,7 +23,7 @@ class Batchblue_Service_BatchBook_ToDo {
 
 
     /**
-     * string $_id of todo 
+     * int $_id of todo 
      */ 
     private $_id; 
 
@@ -46,12 +46,12 @@ class Batchblue_Service_BatchBook_ToDo {
     private $_due_date;
 
     /**
-     * string $_flagged of todo 
+     * boolean $_flagged of todo 
      */ 
     private $_flagged;
 
     /**
-     * string $_complete of todo 
+     * boolean $_complete of todo 
      */ 
     private $_complete;
 
@@ -59,7 +59,7 @@ class Batchblue_Service_BatchBook_ToDo {
     /**
      * constructor
      *
-     * @param int $id optional id of deal
+     * @param int $id optional id of todo
      */ 
     public function __construct($id = null)
     {
@@ -71,10 +71,10 @@ class Batchblue_Service_BatchBook_ToDo {
     /**
      * Get Id
      *
-     * Get id of deal
+     * Get id of todo
      *
      * @param null
-     * @return int $id id of deal
+     * @return int $id id of to
      */
     public function getId()
     {
@@ -84,10 +84,10 @@ class Batchblue_Service_BatchBook_ToDo {
     /**
      * Set Id
      *
-     * Set id for deal
+     * Set id for todo
      *
-     * @param int $value id of deal
-     * @return Batchblue_Service_BatchBook_Deal
+     * @param int $value id of todo
+     * @return Batchblue_Service_BatchBook_ToDo
      */
     public function setId($value)
     {
@@ -104,7 +104,7 @@ class Batchblue_Service_BatchBook_ToDo {
      * 
      *
      * @param null
-     * @return string $title of todo
+     * @return string $title title of todo
      */
     public function getTitle()
     {
@@ -184,7 +184,7 @@ class Batchblue_Service_BatchBook_ToDo {
      * 
      *
      * @param null
-     * @return string $flagged of todo
+     * @return boolean $flagged of todo
      */
     public function getFlagged()
     {
@@ -211,7 +211,7 @@ class Batchblue_Service_BatchBook_ToDo {
      * 
      *
      * @param null
-     * @return string $complete of todo
+     * @return boolean $complete of todo
      */
     public function getComplete()
     {
