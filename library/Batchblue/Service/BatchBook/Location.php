@@ -1,4 +1,3 @@
-
 <?php
 /**
  * 
@@ -284,3 +283,4 @@ class Batchblue_Service_BatchBook_Location {
 
 
 }
+?>
