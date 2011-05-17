@@ -24,7 +24,7 @@ class Batchblue_Service_BatchBook_SuperTag extends  Batchblue_Service_BatchBook_
 
 
     /**
-     * string $_id of location
+     * array $_fields supertag fields
      */ 
     private $_fields;
 
@@ -35,7 +35,7 @@ class Batchblue_Service_BatchBook_SuperTag extends  Batchblue_Service_BatchBook_
      * 
      *
      * @param null
-     * @return array $fields tag
+     * @return array $fields supertag fields
      */
     public function getFields()
     {
