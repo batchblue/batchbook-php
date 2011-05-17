@@ -1,4 +1,3 @@
-
 <?php
 /**
  * 
@@ -57,4 +56,4 @@ class Batchblue_Service_BatchBook_SuperTag extends  Batchblue_Service_BatchBook_
     } 
 
 }
-
+?>
