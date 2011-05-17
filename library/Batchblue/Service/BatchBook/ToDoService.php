@@ -86,6 +86,32 @@ class Batchblue_Service_BatchBook_ToDoService
     }
 
 
+    /**
+     * Index Of ToDos
+     *
+     * @param void
+     * @return array
+     */
+    public function indexOfToDos()
+    {
+        $httpClient = new Zend_Http_Client(
+            'https://' . $this->_accountName . '.batchbook.com/service/todos.xml'
+        );
+        /*
+        if (null !== $limit) {
+            $httpClient->setParameterGet('limit', $limit);
+        }
+         */
+        $httpClient->setAuth($this->_token, 'x');
+        $response = $httpClient->request(Zend_Http_Client::GET);
+        $xmlResponse = simplexml_load_string($response->getBody());
+        $todos = array();
+        foreach ($xmlResponse->todo as $todoElement) {
+            $todos[] = $this->_populateTodoFromXmlElement($todoElement);
+        }
+        return $todos;
+    }
+    
 
     /**
      * Get ToDo
