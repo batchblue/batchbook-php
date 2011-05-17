@@ -67,9 +67,14 @@ class Batchblue_Service_BatchBook_PersonService
         
 
         foreach( $xmlElement->tags->tag as $xmlTag ) { 
-            $tag = new Batchblue_Service_BatchBook_Tag();
-            $tag->setName( $xmlTag->name )
-                  ; 
+            if ($xmlTag->supertag) {
+                $tag = new Batchblue_Service_BatchBook_SuperTag();
+                $tag->setName( $xmlTag->name ); 
+                $tag->setFields($xmlTag->fields);
+            } else {
+                $tag = new Batchblue_Service_BatchBook_Tag();
+                $tag->setName( $xmlTag->name ); 
+            }
 
             array_push( $tags,$tag); 
         } 
@@ -123,7 +128,7 @@ class Batchblue_Service_BatchBook_PersonService
             $httpClient->setParameterGet('name', $name);
         }
         if (null !== $email) {
-            $httpClient->setParameterGet('email', $email );
+            $httpClient->setParameterGet('email', $email);
         }
         if (null !== $offset) {
             $httpClient->setParameterGet('offset', $offset);
@@ -472,3 +477,4 @@ class Batchblue_Service_BatchBook_PersonService
 
 
 }
+?>
