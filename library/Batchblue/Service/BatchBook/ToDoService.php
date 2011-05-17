@@ -97,11 +97,6 @@ class Batchblue_Service_BatchBook_ToDoService
         $httpClient = new Zend_Http_Client(
             'https://' . $this->_accountName . '.batchbook.com/service/todos.xml'
         );
-        /*
-        if (null !== $limit) {
-            $httpClient->setParameterGet('limit', $limit);
-        }
-         */
         $httpClient->setAuth($this->_token, 'x');
         $response = $httpClient->request(Zend_Http_Client::GET);
         $xmlResponse = simplexml_load_string($response->getBody());
