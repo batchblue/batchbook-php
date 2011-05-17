@@ -128,7 +128,7 @@ class Batchblue_Service_BatchBook_PersonService
             $httpClient->setParameterGet('name', $name);
         }
         if (null !== $email) {
-            $httpClient->setParameterGet('email', $email );
+            $httpClient->setParameterGet('email', $email);
         }
         if (null !== $offset) {
             $httpClient->setParameterGet('offset', $offset);
